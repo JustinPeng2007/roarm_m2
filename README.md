@@ -7,7 +7,7 @@
   <a href="https://www.youtube.com/watch?v=PstPVWVywZc" target="_blank" style="display: inline-block;">
     <img src="https://img.youtube.com/vi/PstPVWVywZc/0.jpg" style="width: 50%; display: block;">
   </a>
-
+  <br>
   <!-- Play Button -->
   <a href="https://www.youtube.com/watch?v=PstPVWVywZc" target="_blank" style="display: inline-block;">
     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_play_button_icon_%282013%E2%80%932017%29.svg" 
