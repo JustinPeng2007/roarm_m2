@@ -9,6 +9,7 @@ StaticJsonDocument<256> jsonInfoHttp;
 #include <esp_system.h>
 #include <LittleFS.h>
 #include <WiFi.h>
+#include <esp_wifi.h>
 #include <WebServer.h>
 #include <esp_now.h>
 #include <nvs_flash.h>
@@ -145,6 +146,8 @@ void setup() {
   if(InfoPrint == 1){Serial.println("Application initialization settings.");}
   createMission("boot", "these cmds run automatically at boot.");
   missionPlay("boot", 1);
+
+  RoArmM2_handTorqueCtrl(300);
 }
 
 

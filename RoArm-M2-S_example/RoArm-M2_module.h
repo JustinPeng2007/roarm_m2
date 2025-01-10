@@ -206,7 +206,7 @@ void RoArmM2_moveInit() {
 
   // check SHOULDER_DRIVEING_SERVO position.
   if(InfoPrint == 1){Serial.println("...");}
-  waitMove2Goal(SHOULDER_DRIVING_SERVO_ID, ARM_SERVO_MIDDLE_POS, 30);
+  waitMove2Goal(SHOULDER_DRIVING_SERVO_ID, ARM_SERVO_MIDDLE_POS, 120);
 
   // wait for the jitter to go away.
   delay(1200);
@@ -223,7 +223,7 @@ void RoArmM2_moveInit() {
   // move ELBOW_SERVO to middle position.
   if(InfoPrint == 1){Serial.println("Moving ELBOW_SERVO to middle position.");}
   st.WritePosEx(ELBOW_SERVO_ID, ARM_SERVO_MIDDLE_POS, ARM_SERVO_INIT_SPEED, ARM_SERVO_INIT_ACC);
-  waitMove2Goal(ELBOW_SERVO_ID, ARM_SERVO_MIDDLE_POS, 20);
+  waitMove2Goal(ELBOW_SERVO_ID, ARM_SERVO_MIDDLE_POS, 80);
 
   if(InfoPrint == 1){Serial.println("Moving GRIPPER_SERVO to middle position.");}
   st.WritePosEx(GRIPPER_SERVO_ID, ARM_SERVO_MIDDLE_POS, ARM_SERVO_INIT_SPEED, ARM_SERVO_INIT_ACC);
