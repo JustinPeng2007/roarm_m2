@@ -50,7 +50,7 @@ You can find it here: [RoArm_ROS2_WS](https://github.com/waveshareteam/roarm_ws_
 
 
 # License
-RoArm-M2 for the ESP32: an open source robotics arm.
+RoArm-M2 for ESP32: an open source robotics arm.
 Copyright (C) 2024 [Waveshare](https://www.waveshare.com/)
 
 This program is free software: you can redistribute it and/or modify
