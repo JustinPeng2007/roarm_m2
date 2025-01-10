@@ -2,10 +2,10 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/effectsmachine/roarm_m2)
 ![GitHub repo size](https://img.shields.io/github/repo-size/effectsmachine/roarm_m2) ![GitHub](https://img.shields.io/github/license/effectsmachine/roarm_m2) ![GitHub last commit](https://img.shields.io/github/last-commit/effectsmachine/roarm_m2)
 
-# RoArm-M2-S and RoArm-M2-Pro
+# RoArm-M2
 RoArm-M2 series is a 4DOF smart robotic arm designed for innovative applications. Adopts lightweight structure design with a total weight of less than 900g and the effective payload of 0.5kg@0.5m, it can be flexibly mounted on various mobile platforms. Adopts a 360°omnidirectional base combined with three flexible joints to create a workspace with a 1-meter diameter.
 
-This repo is an example for the [Waveshare RoArm-M2 Series](https://www.waveshare.com/roarm-m2-s.htm): **RoArm-M2-S**， **RoArm-M2-Pro**.
+[Waveshare RoArm-M2 Series](https://www.waveshare.com/roarm-m2-s.htm): **RoArm-M2-S**， **RoArm-M2-Pro**.
 
 ![](./media/RoArm-M2-S-details-37.jpg)
 
