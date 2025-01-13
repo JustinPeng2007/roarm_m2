@@ -48,10 +48,15 @@ You can find it here: [RoArm_ROS2_WS](https://github.com/waveshareteam/roarm_ws_
 
 ![](./media/RoArm-M2-S-details-49.jpg)
 
+## Upgrades:
+
+1. The end-effector's gripping force is now capped at 30%.
+2. Enhanced the startup self-check with a more precise angle detection threshold.
+3. Added compatibility for the latest Arduino-ESP32 3.x.
 
 # License
 RoArm-M2 for ESP32: an open source robotics arm.
-Copyright (C) 2024 [Waveshare](https://www.waveshare.com/)
+Copyright (C) 2025 [Waveshare](https://www.waveshare.com/)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
