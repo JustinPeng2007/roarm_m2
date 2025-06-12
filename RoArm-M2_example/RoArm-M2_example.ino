@@ -14,6 +14,10 @@ StaticJsonDocument<256> jsonInfoHttp;
 #include <esp_now.h>
 #include <nvs_flash.h>
 
+//functions for IMU
+#include "IMU.h"
+
+
 // functions for oled.
 #include "oled_ctrl.h"
 
@@ -44,6 +48,33 @@ StaticJsonDocument<256> jsonInfoHttp;
 // functions for http & web server.
 #include "http_server.h"
 
+EulerAngles stAngles;
+IMU_ST_SENSOR_DATA_FLOAT stGyroRawData;
+IMU_ST_SENSOR_DATA_FLOAT stAccelRawData;
+IMU_ST_SENSOR_DATA stMagnRawData;
+
+void getIMU(){
+  imuDataGet( &stAngles, &stGyroRawData, &stAccelRawData, &stMagnRawData);
+    Serial.println();
+    Serial.println("/-------------------------------------------------------------/");
+    Serial.print("Roll : "); Serial.print(stAngles.roll);
+    Serial.print("    Pitch : "); Serial.print(stAngles.pitch);
+    Serial.print("    Yaw : "); Serial.print(stAngles.yaw);
+    Serial.println();
+    Serial.print("Acceleration: X : "); Serial.print(stAccelRawData.X);
+    Serial.print("    Acceleration: Y : "); Serial.print(stAccelRawData.Y);
+    Serial.print("    Acceleration: Z : "); Serial.print(stAccelRawData.Z);
+    Serial.println();
+    Serial.print("Gyroscope: X : "); Serial.print(stGyroRawData.X);
+    Serial.print("       Gyroscope: Y : "); Serial.print(stGyroRawData.Y);
+    Serial.print("       Gyroscope: Z : "); Serial.print(stGyroRawData.Z);
+    Serial.println();
+    Serial.print("Magnetic: X : "); Serial.print(stMagnRawData.s16X);
+    Serial.print("      Magnetic: Y : "); Serial.print(stMagnRawData.s16Y);
+    Serial.print("      Magnetic: Z : "); Serial.print(stMagnRawData.s16Z);
+    Serial.println();
+}
+
 
 void setup() {
   Serial.begin(115200);
@@ -58,6 +89,13 @@ void setup() {
   screenLine_2 = "starting...";
   screenLine_3 = "";
   oled_update();
+
+  //init the IMU
+  screenLine_2 = screenLine_3;
+  screenLine_3 = "Initialize IMU";
+  oled_update();
+  if (InfoPrint == 1) {Serial.println("Initialize IMU sensor");}
+  imuInit();
 
   // init the littleFS funcs in files_ctrl.h
   screenLine_2 = screenLine_3;
@@ -162,12 +200,6 @@ void loop() {
   }
 
   RoArmM2_getPosByServoFeedback();
-  
-  // esp-now flow ctrl as a flow-leader.
-  switch(espNowMode) {
-  case 1: espNowGroupDevsFlowCtrl();break;
-  case 2: espNowSingleDevFlowCtrl();break;
-  }
 
   if (InfoPrint == 2) {
     RoArmM2_infoFeedback();
@@ -178,4 +210,7 @@ void loop() {
     jsonCmdReceive.clear();
     runNewJsonCmd = false;
   }
+
+  //Obtain IMU data 
+  getIMU();
 }
