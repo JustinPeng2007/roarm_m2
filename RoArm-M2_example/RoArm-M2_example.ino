@@ -186,6 +186,9 @@ void setup() {
   missionPlay("boot", 1);
 
   RoArmM2_handTorqueCtrl(300);
+
+  // so its in wrist mode
+  configEEmodeType(1);
 }
 
 
@@ -201,6 +204,28 @@ void loop() {
 
   RoArmM2_getPosByServoFeedback();
 
+  // --- check for "movepls" command over Serial
+  if (Serial.available() > 0) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim(); // strip whitespace
+
+    // parse only if it starts with movepls
+    if (cmd.startsWith("movepls")) {
+      float x, y, z, wrist, speed;
+      char buf[64];
+      cmd.toCharArray(buf, sizeof(buf));
+
+      // expect exactly five floats after "movepls"
+      if (sscanf(buf, "movepls %f %f %f %f %f", &x, &y, &z, &wrist, &speed) == 5) {
+        RoArmM2_allPosAbsBesselCtrl(x, y, z, wrist, speed);
+        Serial.println("Moved to preset position");
+      }
+      else {
+        Serial.println("Usage: movepls X Y Z wrist_rad speed_mmps");
+      }
+    }
+  }
+
   if (InfoPrint == 2) {
     RoArmM2_infoFeedback();
   }
@@ -212,5 +237,5 @@ void loop() {
   }
 
   //Obtain IMU data 
-  getIMU();
+  // getIMU();
 }
