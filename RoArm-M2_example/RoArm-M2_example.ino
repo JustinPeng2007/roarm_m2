@@ -17,8 +17,6 @@ StaticJsonDocument<256> jsonInfoHttp;
 //functions for IMU
 #include "IMU.h"
 
-//test
-
 // functions for oled.
 #include "oled_ctrl.h"
 
@@ -49,28 +47,10 @@ StaticJsonDocument<256> jsonInfoHttp;
 // functions for http & web server.
 #include "http_server.h"
 
-#include <Kalman.h>
-
-Kalman kalmanX; // Create the Kalman instances
-Kalman kalmanY;
-
 EulerAngles stAngles;
 IMU_ST_SENSOR_DATA_FLOAT stGyroRawData;
 IMU_ST_SENSOR_DATA_FLOAT stAccelRawData;
 IMU_ST_SENSOR_DATA stMagnRawData;
-float filteredPitch = 0.0;
-float filteredYaw = 0.0;
-float prevPitch = 0.0;
-float prevYaw = 0.0;
-const float alpha = 0.05;
-float baselinePitch = 0.21;
-float baselineRoll = 0.1;
-float baselineYaw = 2;
-float threshold = 0.2;
-double compAngleX, compAngleY; // Calculated angle using a complementary filter
-double kalAngleX, kalAngleY;
-
-
 
 void getIMU(){
   imuDataGet( &stAngles, &stGyroRawData, &stAccelRawData, &stMagnRawData);
@@ -94,7 +74,6 @@ void getIMU(){
     Serial.println();
 
 }
-
 
 void setup() {
   Serial.begin(115200);
@@ -207,18 +186,11 @@ void setup() {
 
   RoArmM2_handTorqueCtrl(300);
   
-  kalmanX.setAngle(roll); // Set starting angle
-  kalmanY.setAngle(pitch);
 }
 
 
 void loop() {
 
-  // float currentRoll = stAngles.roll;
-  // float currentYaw = stAngles.yaw;
-
-  // float errorRoll = baselineRoll - currentRoll;
-  // float errorYaw = baselineYaw - currentYaw;
   serialCtrl();
   server.handleClient();
 
@@ -243,57 +215,4 @@ void loop() {
   //Obtain IMU data 
   getIMU();
 
-#ifdef RESTRICT_PITCH
-  // This fixes the transition problem when the accelerometer angle jumps between -180 and 180 degrees
-  if ((roll < -90 && kalAngleX > 90) || (roll > 90 && kalAngleX < -90)) {
-    kalmanX.setAngle(roll);
-    compAngleX = roll;
-    kalAngleX = roll;
-  } else
-    kalAngleX = kalmanX.getAngle(roll, gyroXrate, dt); // Calculate the angle using a Kalman filter
-
-  if (abs(kalAngleX) > 90) // Invert rate, so it fits the restriced accelerometer reading
-  kalAngleY = kalmanY.getAngle(pitch, gyroYrate, dt);
-#else
-  // This fixes the transition problem when the accelerometer angle jumps between -180 and 180 degrees
-  if ((pitch < -90 && kalAngleY > 90) || (pitch > 90 && kalAngleY < -90)) {
-    kalmanY.setAngle(pitch);
-    compAngleY = pitch;
-    kalAngleY = pitch;
-  } else
-    kalAngleY = kalmanY.getAngle(pitch, gyroYrate, dt); // Calculate the angle using a Kalman filter
-
-  if (abs(kalAngleY) > 90) // Invert rate, so it fits the restriced accelerometer reading
-  kalAngleX = kalmanX.getAngle(roll, gyroXrate, dt); // Calculate the angle using a Kalman filter
-#endif
-
-  compAngleX = 0.93 * (compAngleX + gyroXrate * dt) + 0.07 * roll; // Calculate the angle using a Complimentary filter
-  compAngleY = 0.93 * (compAngleY + gyroYrate * dt) + 0.07 * pitch;
-
-
-  float errorPitch = baselinePitch - currentPitch;
-  // filteredPitch = alpha * stAngles.pitch + (1 - alpha) * prevPitch;
-  // // filteredYaw  = alpha * stAngles.yaw  + (1 - alpha) * prevYaw;
-
-  // prevPitch = filteredPitch;
-  // // prevYaw = filteredYaw;
-
-
-  // filteredPitch = 0.98 * filteredPitch + 0.02 * stAngles.pitch;
-
-  // static unsigned long lastUpdate = 0;
-  // if (millis() - lastUpdate > 100) {
-  //   if (abs(filteredPitch - prevPitch) > 2) {
-  //     RoArmM2_singleJointAngleCtrl(SHOULDER_JOINT, -filteredPitch, 20, 20);
-  //     prevPitch = filteredPitch;
-  //   }
-  //   lastUpdate = millis();
-  // }
-  RoArmM2_singleJointAngleCtrl(EOAT_JOINT,270,50,50);
-
-
-  //move elbow joint to 45 degrees, at 100 degrees per second, and 50 degrees per second sqaured acceleration
-  RoArmM2_singleJointAngleCtrl(SHOULDER_JOINT, -filteredPitch, 50, 50);
-  // RoArmM2_singleJointAngleCtrl(BASE_JOINT, -filteredYaw , 50, 50);
-  // RoArmM2_singleJointAngleCtrl(BASE_JOINT, errorYaw, 100, 50);
 } 
