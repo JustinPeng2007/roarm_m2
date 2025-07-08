@@ -52,27 +52,59 @@ IMU_ST_SENSOR_DATA_FLOAT stGyroRawData;
 IMU_ST_SENSOR_DATA_FLOAT stAccelRawData;
 IMU_ST_SENSOR_DATA stMagnRawData;
 
+unsigned long prevTime = 0;
+float gyroYawRate = 0.0;
+float newYaw = 0.0;
+
 void getIMU(){
   imuDataGet( &stAngles, &stGyroRawData, &stAccelRawData, &stMagnRawData);
-    Serial.println();
-    Serial.println("/-------------------------------------------------------------/");
-    Serial.print("Roll : "); Serial.print(stAngles.roll);
-    Serial.print("    Pitch : "); Serial.print(stAngles.pitch);
-    Serial.print("    Yaw : "); Serial.print(stAngles.yaw);
-    Serial.println();
-    Serial.print("Acceleration: X : "); Serial.print(stAccelRawData.X);
-    Serial.print("    Acceleration: Y : "); Serial.print(stAccelRawData.Y);
-    Serial.print("    Acceleration: Z : "); Serial.print(stAccelRawData.Z);
-    Serial.println();
-    Serial.print("Gyroscope: X : "); Serial.print(stGyroRawData.X);
-    Serial.print("       Gyroscope: Y : "); Serial.print(stGyroRawData.Y);
-    Serial.print("       Gyroscope: Z : "); Serial.print(stGyroRawData.Z);
-    Serial.println();
-    Serial.print("Magnetic: X : "); Serial.print(stMagnRawData.s16X);
-    Serial.print("      Magnetic: Y : "); Serial.print(stMagnRawData.s16Y);
-    Serial.print("      Magnetic: Z : "); Serial.print(stMagnRawData.s16Z);
-    Serial.println();
+  
+  unsigned long now = millis();
+  float dt = (now - prevTime) / 1000.0;
+  prevTime = now;
 
+  gyroYawRate = stGyro RawData.Z;
+
+  newYaw += gyroYawRate * dt;
+
+  if (abs(newYaw) > 1.0) {
+    RoArmM2_singleJointAngleCtrl(BASE_JOINT, newYaw, 60, 60);
+  }
+}
+
+void moveIMU() {
+  unsigned long now = millis();
+  float dt = (now - prevTime) / 1000.0;
+  prevTime = now;
+
+  gyroYawRate = stGyroRawData.Z;
+  newYaw += gyroYawRate * dt;
+
+  if (abs(newYaw) > 1.0) {
+    RoArmM2_singleJointAngleCtrl(BASE_JOINT, newYaw, 60, 60);
+  }
+}
+
+void printIMU(){
+   // Serial.println("gyroYawRate : " + String(stGyroRawData.Z) + "    newYaw : " + String(newYaw));
+    // Serial.println();
+    // Serial.println("/-------------------------------------------------------------/");
+    // Serial.print("Roll : "); Serial.print(stAngles.roll);
+    // Serial.print("    Pitch : "); Serial.print(stAngles.pitch);
+    // Serial.print("    Yaw : "); Serial.print(stAngles.yaw);
+    // Serial.println();
+    // Serial.print("Acceleration: X : "); Serial.print(stAccelRawData.X);
+    // Serial.print("    Acceleration: Y : "); Serial.print(stAccelRawData.Y);
+    // Serial.print("    Acceleration: Z : "); Serial.print(stAccelRawData.Z);
+    // Serial.println();
+    // Serial.print("Gyroscope: X : "); Serial.print(stGyroRawData.X);
+    // Serial.print("       Gyroscope: Y : "); Serial.print(stGyroRawData.Y);
+    // Serial.print("       Gyroscope: Z : "); Serial.print(stGyroRawData.Z);
+    // Serial.println();
+    // Serial.print("Magnetic: X : "); Serial.print(stMagnRawData.s16X);
+    // Serial.print("      Magnetic: Y : "); Serial.print(stMagnRawData.s16Y);
+    // Serial.print("      Magnetic: Z : "); Serial.print(stMagnRawData.s16Z);
+    // Serial.println();
 }
 
 void setup() {
@@ -212,7 +244,7 @@ void loop() {
     runNewJsonCmd = false;
   }
 
-  //Obtain IMU data 
   getIMU();
+
 
 } 
